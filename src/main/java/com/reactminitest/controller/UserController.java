@@ -24,9 +24,10 @@ public class UserController {
     public ResponseEntity<String> register(@RequestBody User user){
         Optional<User> byName=userService.findByName(user.getUsername());
         if(byName.isPresent())return new ResponseEntity<>(HttpStatus.CONFLICT);
-        user.setRole(roleService.getById(user.getRole().getId()).get());
+        Role role = roleService.getById(user.getRole().getId()).get();
+        user.setRole(role);
         userService.save(user);
-        return ResponseEntity.ok("Registered");
+        return ResponseEntity.ok(role.getName().toString());
     }
     @PostMapping("login")
     public ResponseEntity<User> login(@RequestBody User user){
@@ -39,5 +40,11 @@ public class UserController {
     @GetMapping("roles")
     public ResponseEntity<List<Role>> getRoles(){
         return ResponseEntity.ok(roleService.getAll());
+    }
+    @GetMapping("check/{username}")
+    public ResponseEntity<String> checkUserName(@PathVariable String username){
+        Optional<User> user=userService.findByName(username);
+        if(user.isEmpty())return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 }

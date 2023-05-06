@@ -12,12 +12,12 @@ public interface IProductService extends IGeneralService<Product>{
     List<Product> complexSearch(Optional<String> name,
                                 Optional<Integer> minPrice,
                                 Optional<Integer> maxPrice,
-                                List<Category> categories);
+                                Optional<List<Category>> categories);
 
     List<Product> getProductByOwner(User user);
     List<Product> complexSearch(Optional<String> name,
                                 Optional<Integer> minPrice,
                                 Optional<Integer> maxPrice,
-                                List<Category> categories,
+                                Optional<List<Category>> categories,
                                 User owner);
 }

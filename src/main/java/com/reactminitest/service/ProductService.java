@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +16,8 @@ import java.util.Optional;
 public class ProductService implements IProductService {
     @Autowired
     IProductRepository repository;
+    @Autowired
+    ICategoryService categoryService;
 
     @Override
     public List<Product> getAll() {
@@ -40,10 +43,10 @@ public class ProductService implements IProductService {
     public List<Product> complexSearch(Optional<String> name,
                                        Optional<Integer> minPrice,
                                        Optional<Integer> maxPrice,
-                                       List<Category> categories) {
+                                       Optional<List<Category>> categories) {
         Specification<Product> byName=ProductSpecification.findByNameLike(name.orElse(""));
         Specification<Product> byPrice=ProductSpecification.findWithPriceBetween(minPrice.orElse(0), maxPrice.orElse(Integer.MAX_VALUE));
-        Specification<Product> byCategory=ProductSpecification.findByCategory(categories);
+        Specification<Product> byCategory=ProductSpecification.findByCategory(categories.orElse(categoryService.getAll()));
         return repository.findAll(byName.and(byCategory.and(byPrice)));
     }
 
@@ -53,10 +56,10 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<Product> complexSearch(Optional<String> name, Optional<Integer> minPrice, Optional<Integer> maxPrice, List<Category> categories, User owner) {
+    public List<Product> complexSearch(Optional<String> name, Optional<Integer> minPrice, Optional<Integer> maxPrice, Optional<List<Category>> categories, User owner) {
         Specification<Product> byName=ProductSpecification.findByNameLike(name.orElse(""));
         Specification<Product> byPrice=ProductSpecification.findWithPriceBetween(minPrice.orElse(0), maxPrice.orElse(Integer.MAX_VALUE));
-        Specification<Product> byCategory=ProductSpecification.findByCategory(categories);
+        Specification<Product> byCategory=ProductSpecification.findByCategory(categories.orElse(categoryService.getAll()));
         Specification<Product> byOwner=ProductSpecification.findByOwner(owner);
         return repository.findAll(byName.and(byCategory.and(byPrice.and(byOwner))));
     }

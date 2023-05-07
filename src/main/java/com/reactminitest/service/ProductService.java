@@ -46,7 +46,7 @@ public class ProductService implements IProductService {
                                        Optional<List<Category>> categories) {
         Specification<Product> byName=ProductSpecification.findByNameLike(name.orElse(""));
         Specification<Product> byPrice=ProductSpecification.findWithPriceBetween(minPrice.orElse(0), maxPrice.orElse(Integer.MAX_VALUE));
-        Specification<Product> byCategory=ProductSpecification.findByCategory(categories.orElse(categoryService.getAll()));
+        Specification<Product> byCategory=ProductSpecification.findByCategory(categories.orElse(new ArrayList<>()));
         return repository.findAll(byName.and(byCategory.and(byPrice)));
     }
 
@@ -59,7 +59,7 @@ public class ProductService implements IProductService {
     public List<Product> complexSearch(Optional<String> name, Optional<Integer> minPrice, Optional<Integer> maxPrice, Optional<List<Category>> categories, User owner) {
         Specification<Product> byName=ProductSpecification.findByNameLike(name.orElse(""));
         Specification<Product> byPrice=ProductSpecification.findWithPriceBetween(minPrice.orElse(0), maxPrice.orElse(Integer.MAX_VALUE));
-        Specification<Product> byCategory=ProductSpecification.findByCategory(categories.orElse(categoryService.getAll()));
+        Specification<Product> byCategory=ProductSpecification.findByCategory(categories.orElse(new ArrayList<>()));
         Specification<Product> byOwner=ProductSpecification.findByOwner(owner);
         return repository.findAll(byName.and(byCategory.and(byPrice.and(byOwner))));
     }

@@ -53,4 +53,18 @@ public class ProductController {
     public ResponseEntity<List<Category>> getCategories(){
         return new ResponseEntity<>(categoryService.getAll(),HttpStatus.OK);
     }
+    @GetMapping("/get/{product}")
+    public ResponseEntity<Product> getProductById(@PathVariable Product product){
+        return ResponseEntity.ok(product);
+    }
+    @PutMapping("update")
+    public ResponseEntity<String> updateProduct(@RequestBody Product product){
+        productService.save(product);
+        return new ResponseEntity<>("updated",HttpStatus.OK);
+    }
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<String> deleteProduct(@PathVariable Long id){
+        productService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
